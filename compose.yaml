@@ -1,7 +1,7 @@
 services:
   postgres:
     image: 'postgres:latest'
-    container_name: database
+    container_name: fileUploader-db
     environment:
       - POSTGRES_DB=fileUploader
       - POSTGRES_PASSWORD=Youcode@2023
@@ -18,7 +18,7 @@ services:
       - fileUploader
 
   app:
-    container_name: fileUploader
+    container_name: fileUploader-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -38,7 +38,7 @@ networks:
     enable_ipv6: true
     ipam:
       config:
-        - subnet: 2001:0DB8::/112
+        - subnet: 2001:0DB9::/112
 
 
 volumes:
