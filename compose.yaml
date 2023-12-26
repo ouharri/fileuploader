@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: database
+    environment:
+      - POSTGRES_DB=Jobinow
+      - POSTGRES_PASSWORD=Youcode@2023
+      - POSTGRES_USER=postgres
+      - PGDATA=/data/postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - type: volume
+        source: postgres-db
+        target: /var/lib/postgresql/data
+    networks:
+      - aftas
+
+  app:
+    container_name: aftas
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8084"
+    depends_on:
+      - postgres
+    restart: no
+    networks:
+      - aftas
+
+networks:
+  aftas:
+    attachable: true
+    name: aftas
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 2001:0DB8::/112
+
+
+volumes:
+  postgres-db:
+    driver: local
