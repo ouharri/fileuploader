@@ -2,7 +2,7 @@
  * This package contains classes for handling and representing API error responses.
  * The classes provide a structured approach to encapsulating different types of errors,
  * including constraint-related and validation-related errors.
- * The primary class, {@link com.ouharri.Jobinow.exceptions.ApiErrorFactory}, represents the overall structure
+ * The primary class, {@link ApiErrorFactory}, represents the overall structure
  * of API error responses and includes information such as HTTP status, timestamp, main error message,
  * debug message, and a list of sub-errors.
  *
@@ -14,7 +14,7 @@
  *  @author <a href="mailto:ouharri.outman@gmail.com">ouharri</a>
  * <p>
  */
-package com.ouharri.Jobinow.exceptions;
+package com.ouharri.fileuploader.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -45,7 +45,7 @@ class ApiConstraintError extends ApiSubError {
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-class ApiValidationError extends ApiSubError {
+public class ApiValidationError extends ApiSubError {
     private String object;
     private String field;
     private Object rejectedValue;
@@ -57,7 +57,7 @@ class ApiValidationError extends ApiSubError {
      * @param object  The object name.
      * @param message The error message.
      */
-    ApiValidationError(String object, String message) {
+    public ApiValidationError(String object, String message) {
         this.object = object;
         this.message = message;
     }
@@ -69,7 +69,7 @@ class ApiValidationError extends ApiSubError {
  *
  * @author <a href="mailto:ouharrioutman@gmail.com">ouharri outman</a>
  */
-abstract class ApiSubError {
+public abstract class ApiSubError {
 }
 
 /**
@@ -97,15 +97,15 @@ public record ApiErrorFactory(
      * @param status  The HTTP status of the error.
      * @param message The main error message.
      */
-    ApiErrorFactory(HttpStatus status, List<String> message) {
+    public ApiErrorFactory(HttpStatus status, List<String> message) {
         this(status, LocalDateTime.now(), message, null, null);
     }
 
-    ApiErrorFactory(List<String> message, Exception ex, List<ApiSubError> subErrors) {
+    public ApiErrorFactory(List<String> message, Exception ex, List<ApiSubError> subErrors) {
         this(HttpStatus.BAD_REQUEST, LocalDateTime.now(), message, ex.getLocalizedMessage(), subErrors);
     }
 
-    ApiErrorFactory(HttpStatus status, List<String> message, Exception ex) {
+    public ApiErrorFactory(HttpStatus status, List<String> message, Exception ex) {
         this(status, LocalDateTime.now(), message, ex.getLocalizedMessage(), null);
     }
 
