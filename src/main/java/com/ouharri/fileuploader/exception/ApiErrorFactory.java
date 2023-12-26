@@ -11,10 +11,10 @@
  * to reduce boilerplate code and a record type for simplifying the creation of immutable data classes.
  * The error classes support detailed error reporting with sub-errors for more granular information.
  *
- *  @author <a href="mailto:ouharri.outman@gmail.com">ouharri</a>
+ * @author <a href="mailto:ouharri.outman@gmail.com">ouharri</a>
  * <p>
  */
-package com.ouharri.fileuploader.message;
+package com.ouharri.fileuploader.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -45,7 +45,7 @@ class ApiConstraintError extends ApiSubError {
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ApiValidationError extends ApiSubError {
+class ApiValidationError extends ApiSubError {
     private String object;
     private String field;
     private Object rejectedValue;
@@ -57,7 +57,7 @@ public class ApiValidationError extends ApiSubError {
      * @param object  The object name.
      * @param message The error message.
      */
-    public ApiValidationError(String object, String message) {
+    ApiValidationError(String object, String message) {
         this.object = object;
         this.message = message;
     }
@@ -69,7 +69,7 @@ public class ApiValidationError extends ApiSubError {
  *
  * @author <a href="mailto:ouharrioutman@gmail.com">ouharri outman</a>
  */
-public abstract class ApiSubError {
+abstract class ApiSubError {
 }
 
 /**
@@ -97,15 +97,15 @@ public record ApiErrorFactory(
      * @param status  The HTTP status of the error.
      * @param message The main error message.
      */
-    public ApiErrorFactory(HttpStatus status, List<String> message) {
+    ApiErrorFactory(HttpStatus status, List<String> message) {
         this(status, LocalDateTime.now(), message, null, null);
     }
 
-    public ApiErrorFactory(List<String> message, Exception ex, List<ApiSubError> subErrors) {
+    ApiErrorFactory(List<String> message, Exception ex, List<ApiSubError> subErrors) {
         this(HttpStatus.BAD_REQUEST, LocalDateTime.now(), message, ex.getLocalizedMessage(), subErrors);
     }
 
-    public ApiErrorFactory(HttpStatus status, List<String> message, Exception ex) {
+    ApiErrorFactory(HttpStatus status, List<String> message, Exception ex) {
         this(status, LocalDateTime.now(), message, ex.getLocalizedMessage(), null);
     }
 
