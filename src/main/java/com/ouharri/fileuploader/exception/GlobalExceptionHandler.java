@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.security.SignatureException;
 import java.util.ArrayList;
@@ -68,6 +69,20 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handle exceptions related to JWT processing (e.g., MalformedJwtException, SignatureException, JwtException).
+     */
+    @ExceptionHandler({MalformedJwtException.class, SignatureException.class, JwtException.class, JpaSystemException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiErrorFactory> handleJwtExceptions(Exception ex) {
+        ApiErrorFactory apiError = new ApiErrorFactory(
+                HttpStatus.BAD_REQUEST,
+                List.of(ex.getLocalizedMessage())
+        );
+        log.error("Handling JWT-related exception: {}", ex.getMessage(), ex);
+        return buildResponseEntity(apiError);
+    }
+
+    /**
      * Handle handleValidationExceptions and return a map of validation errors.
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -96,12 +111,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(apiError);
     }
 
+    /**
+     * Handles ConstraintViolationException and returns a proper API error response.
+     * This method is triggered when there are violations of constraints
+     * specified on the API parameters or entities.
+     *
+     * @param ex The ConstraintViolationException to handle.
+     * @return ResponseEntity containing the API error response.
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiErrorFactory> handleConstraintViolationException(ConstraintViolationException ex) {
         ApiErrorFactory apiError = new ApiErrorFactory(
-                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.BAD_REQUEST,
                 List.of(ex.getMessage()),
                 ex
         );
@@ -109,8 +132,12 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+
     /**
      * Handle generic exceptions and return a proper API error response.
+     *
+     * @param ex The generic exception to handle.
+     * @return ResponseEntity containing the API error response.
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -163,6 +190,21 @@ public class GlobalExceptionHandler {
                 List.of(ex.getLocalizedMessage())
         );
         log.error("Handling Authentication exception", ex);
+        return buildResponseEntity(apiError);
+    }
+
+    /**
+     * Handle exceptions related to file upload size exceeding the maximum allowed size.
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    public ResponseEntity<ApiErrorFactory> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+        ApiErrorFactory apiError = new ApiErrorFactory(
+                HttpStatus.EXPECTATION_FAILED,
+                List.of(ex.getMessage()),
+                ex
+        );
+        log.error("Handling MaxUploadSizeExceededException: {}", ex.getMessage(), ex);
         return buildResponseEntity(apiError);
     }
 
