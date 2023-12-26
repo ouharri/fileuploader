@@ -1,4 +1,4 @@
-package com.ouharri.Jobinow.model.entities;
+package com.ouharri.fileuploader.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
