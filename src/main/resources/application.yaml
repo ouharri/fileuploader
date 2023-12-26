@@ -1,1 +1,32 @@
+server:
+  port: 8082
 
+logging:
+  level:
+    org.springframework.beans.factory: ERROR
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  docker:
+    compose:
+      enabled: false
+      file: compose.yaml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fileUploader?useSSL=false
+    username: postgres
+    password: Youcode@2023
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/db.changelog-master.yaml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
