@@ -1,5 +1,6 @@
-package com.ouharri.Jobinow.exceptions;
+package com.ouharri.fileuploader.exception;
 
+import com.ouharri.fileuploader.message.ApiErrorFactory;
 import lombok.Getter;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
