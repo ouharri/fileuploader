@@ -1,4 +1,4 @@
-package com.ouharri.Jobinow.exceptions;
+package com.ouharri.fileuploader.exception;
 
 /**
  * This class is used when an attempt to find an entity has thrown an exception.
