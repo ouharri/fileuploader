@@ -1,7 +1,6 @@
 package com.ouharri.fileuploader.exception;
 
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +70,7 @@ public class GlobalExceptionHandler {
     /**
      * Handle exceptions related to JWT processing (e.g., MalformedJwtException, SignatureException, JwtException).
      */
-    @ExceptionHandler({MalformedJwtException.class, SignatureException.class, JwtException.class, JpaSystemException.class})
+    @ExceptionHandler({SignatureException.class, JwtException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiErrorFactory> handleJwtExceptions(Exception ex) {
         ApiErrorFactory apiError = new ApiErrorFactory(
@@ -152,11 +151,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle exceptions related to JWT processing (e.g., MalformedJwtException, SignatureException, JwtException).
+     * Handle exceptions related to JWT processing (e.g., SignatureException, JwtException).
      */
-    @ExceptionHandler({MalformedJwtException.class, SignatureException.class, JwtException.class, JpaSystemException.class})
+    @ExceptionHandler(JpaSystemException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ApiErrorFactory> handleMalformedJwtException(Exception ex) {
+    public ResponseEntity<ApiErrorFactory> handleMalformedJwtException(JpaSystemException ex) {
         ApiErrorFactory apiError = new ApiErrorFactory(
                 HttpStatus.BAD_REQUEST,
                 List.of(ex.getLocalizedMessage())
