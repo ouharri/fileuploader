@@ -3,7 +3,7 @@ services:
     image: 'postgres:latest'
     container_name: database
     environment:
-      - POSTGRES_DB=Jobinow
+      - POSTGRES_DB=fileUploader
       - POSTGRES_PASSWORD=Youcode@2023
       - POSTGRES_USER=postgres
       - PGDATA=/data/postgres
@@ -15,10 +15,10 @@ services:
         source: postgres-db
         target: /var/lib/postgresql/data
     networks:
-      - aftas
+      - fileUploader
 
   app:
-    container_name: aftas
+    container_name: fileUploader
     build:
       context: .
       dockerfile: Dockerfile
@@ -28,12 +28,12 @@ services:
       - postgres
     restart: no
     networks:
-      - aftas
+      - fileUploader
 
 networks:
-  aftas:
+  fileUploader:
     attachable: true
-    name: aftas
+    name: fileUploader
     driver: bridge
     enable_ipv6: true
     ipam:
