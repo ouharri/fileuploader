@@ -1,10 +1,10 @@
-package com.ouharri.Jobinow.exceptions;
+package com.ouharri.fileuploader.exception;
 
-import com.ouharri.Jobinow.model.entities.User;
+import com.ouharri.fileuploader.entity.FileDB;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * The parent for all exceptions, associated with resources, such as {@link User} etc.
+ * The parent for all exceptions, associated with resources, such as {@link FileDB} etc.
  *
  *  @author <a href="mailto:ouharri.outman@gmail.com">ouharri</a>
  * @version 1.0
