@@ -64,20 +64,23 @@ public class FileController {
      */
     @GetMapping("/files")
     public ResponseEntity<List<ResponseFile>> getListFiles() {
-        List<ResponseFile> files = storageService.getAllFiles().map(dbFile -> {
-            return ResponseFile.builder()
-                    .name(dbFile.getName())
-                    .type(dbFile.getType())
-                    .size(dbFile.getData().length)
-                    .url(
-                            ServletUriComponentsBuilder
-                                    .fromCurrentContextPath()
-                                    .path("/files/")
-                                    .path(dbFile.getId().toString())
-                                    .toUriString()
-                    )
-                    .build();
-        }).collect(Collectors.toList());
+        List<ResponseFile> files = storageService.getAllFiles()
+                .collect(Collectors.toList())
+                .stream()
+                .map(dbFile -> ResponseFile.builder()
+                        .name(dbFile.getName())
+                        .type(dbFile.getType())
+                        .size(dbFile.getData().length)
+                        .url(
+                                ServletUriComponentsBuilder
+                                        .fromCurrentContextPath()
+                                        .path("/files/")
+                                        .path(dbFile.getId().toString())
+                                        .toUriString()
+                        )
+                        .build())
+                .collect(Collectors.toList());
+
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
