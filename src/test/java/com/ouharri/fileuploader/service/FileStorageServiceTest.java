@@ -23,12 +23,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for the {@link FileStorageService} class.
+ * Unit tests for the {@link FileStorageServiceImpl} class.
  * These tests cover various scenarios related to file storage and retrieval.
  * Uses Mockito for mocking dependencies and simulating behavior.
  *
  * @author Your Name
- * @see FileStorageService
+ * @see FileStorageServiceImpl
  */
 class FileStorageServiceTest {
 
@@ -36,7 +36,7 @@ class FileStorageServiceTest {
     private FileDBRepository fileDBRepository;
 
     @InjectMocks
-    private FileStorageService fileStorageService;
+    private FileStorageServiceImpl fileStorageService;
 
     @BeforeEach
     void setUp() {
@@ -118,4 +118,74 @@ class FileStorageServiceTest {
         assertEquals(mockFiles.size(), allFiles.size());
         verify(fileDBRepository, times(1)).findAll();
     }
+
+    @Test
+    void updateFile_Success() throws IOException {
+        // Arrange
+        UUID fileId = UUID.randomUUID();
+        MultipartFile mockFile = new MockMultipartFile("test.txt", "Updated file content".getBytes());
+        FileDB existingFile = new FileDB();
+        existingFile.setId(fileId);
+
+        // Mock behavior
+        when(fileDBRepository.findById(fileId)).thenReturn(Optional.of(existingFile));
+        when(fileDBRepository.save(any(FileDB.class))).thenReturn(existingFile);
+
+        // Act
+        FileDB updatedFile = fileStorageService.updateFile(fileId, mockFile);
+
+        // Assert
+        assertNotNull(updatedFile);
+        assertEquals(fileId, updatedFile.getId());
+        verify(fileDBRepository, times(1)).findById(fileId);
+        verify(fileDBRepository, times(1)).save(any(FileDB.class));
+    }
+
+    @Test
+    void updateFile_FileNotFound() {
+        // Arrange
+        UUID fileId = UUID.randomUUID();
+        MultipartFile mockFile = new MockMultipartFile("test.txt", "Updated file content".getBytes());
+
+        // Mock behavior to return empty optional
+        when(fileDBRepository.findById(fileId)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        assertThrows(ResourceNotFoundException.class, () -> fileStorageService.updateFile(fileId, mockFile));
+        verify(fileDBRepository, times(1)).findById(fileId);
+        verify(fileDBRepository, never()).save(any(FileDB.class));
+    }
+
+    @Test
+    void deleteFile_Success() {
+        // Arrange
+        UUID fileId = UUID.randomUUID();
+        FileDB existingFile = new FileDB();
+        existingFile.setId(fileId);
+
+        // Mock behavior
+        when(fileDBRepository.findById(fileId)).thenReturn(Optional.of(existingFile));
+
+        // Act
+        fileStorageService.deleteFile(fileId);
+
+        // Assert (verify that delete is called)
+        verify(fileDBRepository, times(1)).findById(fileId);
+        verify(fileDBRepository, times(1)).delete(existingFile);
+    }
+
+    @Test
+    void deleteFile_FileNotFound() {
+        // Arrange
+        UUID fileId = UUID.randomUUID();
+
+        // Mock behavior to return empty optional
+        when(fileDBRepository.findById(fileId)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        assertThrows(ResourceNotFoundException.class, () -> fileStorageService.deleteFile(fileId));
+        verify(fileDBRepository, times(1)).findById(fileId);
+        verify(fileDBRepository, never()).delete(any(FileDB.class));
+    }
+
 }
