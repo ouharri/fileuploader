@@ -4,6 +4,7 @@ import com.ouharri.fileuploader.entity.FileDB;
 import com.ouharri.fileuploader.exception.ResourceNotCreatedException;
 import com.ouharri.fileuploader.exception.ResourceNotFoundException;
 import com.ouharri.fileuploader.repository.FileDBRepository;
+import com.ouharri.fileuploader.service.impl.FileStorageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -111,7 +112,7 @@ class FileStorageServiceTest {
         when(fileDBRepository.findAll()).thenReturn(mockFiles);
 
         // Act
-        List<FileDB> allFiles = fileStorageService.getAllFiles().collect(Collectors.toList());
+        List<FileDB> allFiles = fileStorageService.getAllFiles();
 
         // Assert
         assertNotNull(allFiles);
