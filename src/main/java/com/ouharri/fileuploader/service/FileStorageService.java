@@ -5,6 +5,8 @@ import com.ouharri.fileuploader.exception.ResourceNotCreatedException;
 import com.ouharri.fileuploader.exception.ResourceNotFoundException;
 import com.ouharri.fileuploader.repository.FileDBRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +20,7 @@ import java.util.stream.Stream;
  * Service class for handling file-related operations.
  */
 @Service
+@EnableCaching
 @AllArgsConstructor
 public class FileStorageService {
 
@@ -37,7 +40,6 @@ public class FileStorageService {
                 .type(file.getContentType())
                 .data(file.getBytes())
                 .build();
-
         try {
             return fileDBRepository.save(fileDB);
         } catch (ResourceNotCreatedException e) {
@@ -52,6 +54,7 @@ public class FileStorageService {
      * @return The FileDB entity.
      * @throws ResourceNotFoundException If the file with the specified ID is not found.
      */
+    @Cacheable("Files")
     public FileDB getFile(UUID id) {
         return fileDBRepository.findById(id)
                 .orElseThrow(() ->
@@ -64,6 +67,7 @@ public class FileStorageService {
      *
      * @return A stream of FileDB entities.
      */
+    @Cacheable("Files")
     public Stream<FileDB> getAllFiles() {
         return fileDBRepository.findAll().stream();
     }
