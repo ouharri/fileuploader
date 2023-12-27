@@ -4,7 +4,9 @@ import com.ouharri.fileuploader.entity.FileDB;
 import com.ouharri.fileuploader.exception.ResourceNotCreatedException;
 import com.ouharri.fileuploader.exception.ResourceNotFoundException;
 import com.ouharri.fileuploader.repository.FileDBRepository;
+import com.ouharri.fileuploader.service.spec.FileStorageService;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ import java.util.stream.Stream;
 @Service
 @EnableCaching
 @AllArgsConstructor
-public class FileStorageService {
+public class FileStorageServiceImpl implements FileStorageService {
 
     private final FileDBRepository fileDBRepository;
 
@@ -54,7 +56,7 @@ public class FileStorageService {
      * @return The FileDB entity.
      * @throws ResourceNotFoundException If the file with the specified ID is not found.
      */
-    @Cacheable("Files")
+    @Cacheable("file")
     public FileDB getFile(UUID id) {
         return fileDBRepository.findById(id)
                 .orElseThrow(() ->
@@ -67,8 +69,53 @@ public class FileStorageService {
      *
      * @return A stream of FileDB entities.
      */
-    @Cacheable("Files")
+    @Cacheable("files")
     public Stream<FileDB> getAllFiles() {
         return fileDBRepository.findAll().stream();
+    }
+
+    /**
+     * Update the content of a file in the database.
+     *
+     * @param id   The unique identifier of the file.
+     * @param file The updated file data.
+     * @return The updated FileDB entity.
+     * @throws IOException               If an I/O exception occurs while reading the file data.
+     * @throws ResourceNotFoundException If the file with the specified ID is not found.
+     */
+    @Cacheable("file")
+    @CacheEvict(value = "file", key = "id")
+    public FileDB updateFile(UUID id, MultipartFile file) throws IOException {
+        FileDB existingFile = getFile(id);
+        if (existingFile == null)
+            throw new ResourceNotFoundException("Could not find file with id " + id);
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        existingFile.setName(fileName);
+        existingFile.setType(file.getContentType());
+        existingFile.setData(file.getBytes());
+        try {
+            return fileDBRepository.save(existingFile);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Could not update file with id " + id);
+        }
+    }
+
+    /**
+     * Delete a file from the database by its ID.
+     *
+     * @param id The unique identifier of the file.
+     * @throws ResourceNotFoundException If the file with the specified ID is not found.
+     */
+    @Cacheable("file")
+    @CacheEvict(value = "file", key = "#id")
+    public void deleteFile(UUID id) {
+        FileDB fileDB = getFile(id);
+        if (fileDB == null)
+            throw new ResourceNotFoundException("Could not find file with id " + id);
+        try {
+            fileDBRepository.delete(fileDB);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Could not delete file with id " + id);
+        }
     }
 }
