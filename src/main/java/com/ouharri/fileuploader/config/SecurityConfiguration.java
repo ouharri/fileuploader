@@ -41,6 +41,7 @@ public class SecurityConfiguration {
             "GET",
             "POST",
             "PUT",
+            "DELETE"
     };
     private static final String[] ALLOW_HEAD = {
             "Access-Control-Allow-Origin",
