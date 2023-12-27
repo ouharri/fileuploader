@@ -15,9 +15,9 @@ import java.io.Serializable;
 /**
  * This interface represents the base entity with common fields like ID, creation timestamp,
  * update timestamp, and version. Entities in the application should implement this interface.
- *  @author <a href="mailto:ouharri.outman@gmail.com">ouharri</a>
  *
  * @param <ID> The type of the entity's identifier.
+ * @author <a href="mailto:ouharri.outman@gmail.com">ouharri</a>
  */
 public interface _Entity<ID> extends Serializable {
 
