@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,15 +35,19 @@ public class FileStorageServiceImpl implements FileStorageService {
      * @return The stored FileDB entity.
      * @throws IOException If an I/O exception occurs while reading the file data.
      */
-    @CachePut(value = "file", key = "#result.id")
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "file", key = "#result.id", allEntries = true, condition = "#result.id != null")
+            }
+    )
     public FileDB store(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        FileDB fileDB = FileDB.builder()
-                .name(fileName)
-                .type(file.getContentType())
-                .data(file.getBytes())
-                .build();
         try {
+            FileDB fileDB = FileDB.builder()
+                    .name(fileName)
+                    .type(file.getContentType())
+                    .data(file.getBytes())
+                    .build();
             return fileDBRepository.save(fileDB);
         } catch (ResourceNotCreatedException e) {
             throw new ResourceNotCreatedException("Could not store file " + fileName + ". Please try again!");
@@ -69,7 +74,7 @@ public class FileStorageServiceImpl implements FileStorageService {
      *
      * @return A stream of FileDB entities.
      */
-    @Cacheable("files")
+    @Cacheable("file")
     public List<FileDB> getAllFiles() {
         return fileDBRepository.findAll();
     }
