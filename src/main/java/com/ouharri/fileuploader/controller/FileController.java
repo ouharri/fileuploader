@@ -2,7 +2,6 @@ package com.ouharri.fileuploader.controller;
 
 import com.ouharri.fileuploader.entity.FileDB;
 import com.ouharri.fileuploader.message.ResponseFile;
-import com.ouharri.fileuploader.service.FileStorageServiceImpl;
 import com.ouharri.fileuploader.service.spec.FileStorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -66,16 +65,18 @@ public class FileController {
     @GetMapping("/files")
     public ResponseEntity<List<ResponseFile>> getListFiles() {
         List<ResponseFile> files = storageService.getAllFiles().map(dbFile -> {
-            String fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(dbFile.getId().toString())
-                    .toUriString();
-            return new ResponseFile(
-                    dbFile.getName(),
-                    fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getData().length);
+            return ResponseFile.builder()
+                    .name(dbFile.getName())
+                    .type(dbFile.getType())
+                    .size(dbFile.getData().length)
+                    .url(
+                            ServletUriComponentsBuilder
+                                    .fromCurrentContextPath()
+                                    .path("/files/")
+                                    .path(dbFile.getId().toString())
+                                    .toUriString()
+                    )
+                    .build();
         }).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
