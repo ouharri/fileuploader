@@ -3,6 +3,7 @@ package com.ouharri.fileuploader.controller;
 import com.ouharri.fileuploader.entity.FileDB;
 import com.ouharri.fileuploader.message.ResponseFile;
 import com.ouharri.fileuploader.service.FileStorageServiceImpl;
+import com.ouharri.fileuploader.service.spec.FileStorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @CrossOrigin("**")
 public class FileController {
 
-    private final FileStorageServiceImpl storageService;
+    private final FileStorageService storageService;
 
     /**
      * Upload a file to the server.
