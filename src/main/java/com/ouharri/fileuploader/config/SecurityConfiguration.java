@@ -22,10 +22,12 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
  */
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
     private static final String[] WHITE_LIST_URL = {
+            "/files",
+            "/upload",
             "/files/**",
             "/upload/**",
             "/swagger-ui/**",
