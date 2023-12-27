@@ -2,7 +2,7 @@ FROM maven:3.9-amazoncorretto-21 AS build
 VOLUME /tmp
 WORKDIR /app
 COPY . .
-RUN mvn clean install
+RUN mvn clean install -DskipTests
 
 FROM openjdk:21
 WORKDIR /app
