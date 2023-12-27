@@ -6,7 +6,6 @@ import com.ouharri.fileuploader.exception.ResourceNotFoundException;
 import com.ouharri.fileuploader.repository.FileDBRepository;
 import com.ouharri.fileuploader.service.spec.FileStorageService;
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -90,7 +89,6 @@ public class FileStorageServiceImpl implements FileStorageService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("File not found with id " + id)
                 );
-        ;
         if (existingFile == null)
             throw new ResourceNotFoundException("Could not find file with id " + id);
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
