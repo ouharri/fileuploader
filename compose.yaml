@@ -35,7 +35,7 @@ services:
     depends_on:
       - postgres
       - redis
-    restart: no
+    restart: unless-stopped
     networks:
       - fileUploader
 
