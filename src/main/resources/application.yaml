@@ -10,6 +10,10 @@ redis:
   port: 6379
 
 spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000
   servlet:
     multipart:
       max-file-size: 10MB
