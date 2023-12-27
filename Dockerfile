@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 RUN mvn clean install -DskipTests
 
-FROM openjdk:21
+FROM openjdk:23-slim
 WORKDIR /app
 COPY --from=build app/target/fileUploader-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8082
