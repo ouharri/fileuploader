@@ -15,7 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Controller class for handling file-related operations.
@@ -65,7 +64,6 @@ public class FileController {
     @GetMapping("/files")
     public ResponseEntity<List<ResponseFile>> getListFiles() {
         List<ResponseFile> files = storageService.getAllFiles()
-                .collect(Collectors.toList())
                 .stream()
                 .map(dbFile -> ResponseFile.builder()
                         .name(dbFile.getName())
@@ -79,8 +77,7 @@ public class FileController {
                                         .toUriString()
                         )
                         .build())
-                .collect(Collectors.toList());
-
+                .toList();
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
