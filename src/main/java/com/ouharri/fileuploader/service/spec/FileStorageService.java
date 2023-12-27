@@ -4,8 +4,8 @@ import com.ouharri.fileuploader.entity.FileDB;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Service interface for handling file-related operations.
@@ -34,7 +34,7 @@ public interface FileStorageService {
      *
      * @return A stream of FileDB entities.
      */
-    Stream<FileDB> getAllFiles();
+    List<FileDB> getAllFiles();
 
     /**
      * Update the content of a file in the database.
