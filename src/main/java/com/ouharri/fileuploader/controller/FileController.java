@@ -63,7 +63,6 @@ public class FileController {
      */
     @GetMapping("/files")
     public ResponseEntity<List<ResponseFile>> getListFiles() {
-        System.out.println(storageService.getAllFiles());
         List<ResponseFile> files = storageService.getAllFiles()
                 .stream()
                 .map(dbFile -> ResponseFile.builder()
