@@ -14,9 +14,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Service class for handling file-related operations.
@@ -70,8 +70,8 @@ public class FileStorageServiceImpl implements FileStorageService {
      * @return A stream of FileDB entities.
      */
     @Cacheable("files")
-    public Stream<FileDB> getAllFiles() {
-        return fileDBRepository.findAll().stream();
+    public List<FileDB> getAllFiles() {
+        return fileDBRepository.findAll();
     }
 
     /**
