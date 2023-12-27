@@ -1,4 +1,4 @@
-package com.ouharri.fileuploader.service;
+package com.ouharri.fileuploader.service.impl;
 
 import com.ouharri.fileuploader.entity.FileDB;
 import com.ouharri.fileuploader.exception.ResourceNotCreatedException;
@@ -114,7 +114,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new ResourceNotFoundException("Could not find file with id " + id);
         try {
             fileDBRepository.delete(fileDB);
-        } catch (Exception e) {
+        } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Could not delete file with id " + id);
         }
     }
