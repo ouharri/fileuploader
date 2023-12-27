@@ -77,7 +77,6 @@ public class FileController {
                     dbFile.getType(),
                     dbFile.getData().length);
         }).collect(Collectors.toList());
-
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
@@ -90,7 +89,6 @@ public class FileController {
     @GetMapping("/files/{id}")
     public ResponseEntity<byte[]> getFile(@PathVariable UUID id) {
         FileDB fileDB = storageService.getFile(id);
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "Inline; filename=\"" + fileDB.getName() + "\"")
                 .header(HttpHeaders.CONTENT_TYPE, fileDB.getType())
@@ -105,5 +103,42 @@ public class FileController {
                 .header(HttpHeaders.PRAGMA, "public")
                 .header(HttpHeaders.EXPIRES, "31536000")
                 .body(fileDB.getData());
+    }
+
+    /**
+     * Update the content of a specific file by its ID.
+     *
+     * @param id   The unique identifier of the file.
+     * @param file The updated file data.
+     * @return ResponseEntity containing the updated file data and metadata.
+     */
+    @PutMapping("/files/{id}")
+    public ResponseEntity<ResponseFile> updateFile(@PathVariable UUID id, @RequestParam("file") MultipartFile file) throws IOException {
+        FileDB updatedFile = storageService.updateFile(id, file);
+        ResponseFile responseFile = ResponseFile.builder()
+                .name(updatedFile.getName())
+                .type(updatedFile.getType())
+                .size(file.getSize())
+                .url(
+                        ServletUriComponentsBuilder
+                                .fromCurrentContextPath()
+                                .path("/files/")
+                                .path(updatedFile.getId().toString())
+                                .toUriString()
+                )
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseFile);
+    }
+
+    /**
+     * Delete a specific file by its ID.
+     *
+     * @param id The unique identifier of the file.
+     * @return ResponseEntity indicating the success of the operation.
+     */
+    @DeleteMapping("/files/{id}")
+    public ResponseEntity<String> deleteFile(@PathVariable UUID id) {
+        storageService.deleteFile(id);
+        return ResponseEntity.status(HttpStatus.OK).body("File deleted successfully");
     }
 }
