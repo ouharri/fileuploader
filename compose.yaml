@@ -53,3 +53,4 @@ networks:
 volumes:
   postgres-db:
     driver: local
+    external: true
