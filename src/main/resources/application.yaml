@@ -23,7 +23,7 @@ spring:
       enabled: false
       file: compose.yaml
   datasource:
-    url: jdbc:postgresql://postgres:5432/fileUploader?useSSL=false
+    url: jdbc:postgresql://postgres:5432/fileUploader
     username: postgres
     password: Youcode@2023
     driver-class-name: org.postgresql.Driver
