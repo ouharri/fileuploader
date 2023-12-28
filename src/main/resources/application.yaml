@@ -6,7 +6,7 @@ logging:
     org.springframework.beans.factory: ERROR
 
 redis:
-  host: redis
+  host: fileUploader-redis
   port: 6379
 
 spring:
@@ -23,7 +23,7 @@ spring:
       enabled: false
       file: compose.yaml
   datasource:
-    url: jdbc:postgresql://postgres:5432/fileUploader
+    url: jdbc:postgresql://fileUploader-db:5432/fileUploader?useSSL=false
     username: postgres
     password: Youcode@2023
     driver-class-name: org.postgresql.Driver
