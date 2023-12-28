@@ -3,6 +3,7 @@ package com.ouharri.fileuploader.controller;
 import com.ouharri.fileuploader.entity.FileDB;
 import com.ouharri.fileuploader.message.ResponseFile;
 import com.ouharri.fileuploader.service.spec.FileStorageService;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class FileController {
      * @return ResponseEntity containing a success message and the file metadata.
      */
     @PostMapping("/upload")
-    public ResponseEntity<ResponseFile> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<ResponseFile> uploadFile(@RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file) throws IOException {
         try {
             FileDB fileDB = storageService.store(file);
             ResponseFile responseFile = ResponseFile.builder()
