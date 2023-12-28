@@ -10,8 +10,13 @@ services:
       - PGDATA=/data/postgres
     restart: always
     hostname: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     ports:
-      - "5433:5432"
+      - "5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
@@ -21,8 +26,13 @@ services:
     image: 'redis:latest'
     container_name: fileUploader-redis
     hostname: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     ports:
-      - "6379:6379"
+      - "6379"
     restart: always
     networks:
       - fileUploader
@@ -36,9 +46,9 @@ services:
       - "8083:8082"
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - fileUploader
