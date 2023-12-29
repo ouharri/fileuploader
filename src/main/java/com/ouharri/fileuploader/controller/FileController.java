@@ -42,14 +42,8 @@ public class FileController {
      */
     @PostMapping("/upload")
     public ResponseEntity<ResponseFile> uploadFile(
-            @Valid @RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file,
-            BindingResult bindingResult
+            @Valid @RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file
     ) throws IOException {
-        if (bindingResult.hasErrors()) {
-            log.error("Validation error during file upload: {}", bindingResult.getAllErrors());
-            throw new ResourceNotCreatedException(bindingResult);
-        }
-
         try {
             FileDB fileDB = storageService.store(file);
             ResponseFile responseFile = ResponseFile.builder()
@@ -62,9 +56,7 @@ public class FileController {
                             .path(fileDB.getId().toString())
                             .toUriString())
                     .build();
-
             log.info("File uploaded successfully: {}", responseFile);
-
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(responseFile);
@@ -94,9 +86,7 @@ public class FileController {
                                 .toUriString())
                         .build())
                 .toList();
-
         log.info("Retrieved list of files: {}", files);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(files);
@@ -110,18 +100,10 @@ public class FileController {
      */
     @GetMapping("/files/{id}")
     public ResponseEntity<byte[]> getFile(
-            @Valid @PathVariable UUID id,
-            BindingResult bindingResult
+            @Valid @PathVariable UUID id
     ) {
-        if (bindingResult.hasErrors()) {
-            log.error("Validation error during file retrieval: {}", bindingResult.getAllErrors());
-            throw new ResourceNotCreatedException(bindingResult);
-        }
-
         FileDB fileDB = storageService.getFile(id);
-
         log.info("Retrieved file: {}", fileDB);
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "Inline; filename=\"" + fileDB.getName() + "\"")
                 .header(HttpHeaders.CONTENT_TYPE, fileDB.getType())
@@ -147,15 +129,9 @@ public class FileController {
      */
     @PutMapping("/files/{id}")
     public ResponseEntity<ResponseFile> updateFile(
-            @Valid @RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file,
             @PathVariable UUID id,
-            BindingResult bindingResult
+            @Valid @RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file,
     ) throws IOException {
-        if (bindingResult.hasErrors()) {
-            log.error("Validation error during file update: {}", bindingResult.getAllErrors());
-            throw new ResourceNotCreatedException(bindingResult);
-        }
-
         FileDB updatedFile = storageService.updateFile(id, file);
         ResponseFile responseFile = ResponseFile.builder()
                 .name(updatedFile.getName())
@@ -167,9 +143,7 @@ public class FileController {
                         .path(updatedFile.getId().toString())
                         .toUriString())
                 .build();
-
         log.info("File updated successfully: {}", responseFile);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responseFile);
@@ -183,18 +157,10 @@ public class FileController {
      */
     @DeleteMapping("/files/{id}")
     public ResponseEntity<String> deleteFile(
-            @Valid @PathVariable UUID id,
-            BindingResult bindingResult
+            @Valid @PathVariable UUID id
     ) {
-        if (bindingResult.hasErrors()) {
-            log.error("Validation error during file deletion: {}", bindingResult.getAllErrors());
-            throw new ResourceNotCreatedException(bindingResult);
-        }
-
         storageService.deleteFile(id);
-
         log.info("File deleted successfully: {}", id);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("File deleted successfully");
