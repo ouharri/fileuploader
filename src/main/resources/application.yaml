@@ -6,7 +6,7 @@ logging:
     org.springframework.beans.factory: ERROR
 
 redis:
-  host: fileUploader-redis
+  host: fileUploader-cache
   port: 6379
 
 spring:
