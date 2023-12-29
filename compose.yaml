@@ -1,6 +1,6 @@
 services:
 
-  fileUploader-db:
+  db:
     image: 'postgres:latest'
     container_name: fileUploader-db
     environment:
@@ -22,7 +22,7 @@ services:
     networks:
       - fileUploader
 
-  fileUploader-cache:
+  cache:
     image: 'redis:latest'
     container_name: fileUploader-cache
     hostname: redis
@@ -37,7 +37,7 @@ services:
     networks:
       - fileUploader
 
-  fileUploader-api:
+  api:
     container_name: fileUploader-api
     build:
       context: .
@@ -45,9 +45,9 @@ services:
     ports:
       - "8083:8082"
     depends_on:
-      fileUploader-db:
+      db:
         condition: service_healthy
-      fileUploader-cache:
+      cache:
         condition: service_healthy
     restart: unless-stopped
     networks:
