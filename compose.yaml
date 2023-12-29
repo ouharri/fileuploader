@@ -1,6 +1,6 @@
 services:
 
-  postgres:
+  fileUploader-db:
     image: 'postgres:latest'
     container_name: fileUploader-db
     environment:
@@ -11,7 +11,7 @@ services:
     restart: always
     hostname: postgres
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -22,12 +22,12 @@ services:
     networks:
       - fileUploader
 
-  redis:
+  fileUploader-redis:
     image: 'redis:latest'
     container_name: fileUploader-redis
     hostname: redis
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -37,7 +37,7 @@ services:
     networks:
       - fileUploader
 
-  app:
+  fileUploader-api:
     container_name: fileUploader-api
     build:
       context: .
