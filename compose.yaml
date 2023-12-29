@@ -22,9 +22,9 @@ services:
     networks:
       - fileUploader
 
-  fileUploader-redis:
+  fileUploader-cache:
     image: 'redis:latest'
-    container_name: fileUploader-redis
+    container_name: fileUploader-cache
     hostname: redis
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
@@ -45,9 +45,9 @@ services:
     ports:
       - "8083:8082"
     depends_on:
-      postgres:
+      fileUploader-db:
         condition: service_healthy
-      redis:
+      fileUploader-cache:
         condition: service_healthy
     restart: unless-stopped
     networks:
