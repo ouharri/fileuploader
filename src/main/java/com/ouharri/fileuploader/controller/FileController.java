@@ -130,7 +130,7 @@ public class FileController {
     @PutMapping("/files/{id}")
     public ResponseEntity<ResponseFile> updateFile(
             @PathVariable UUID id,
-            @Valid @RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file,
+            @Valid @RequestParam("file") @NotNull(message = "The File must be present") MultipartFile file
     ) throws IOException {
         FileDB updatedFile = storageService.updateFile(id, file);
         ResponseFile responseFile = ResponseFile.builder()
