@@ -14,7 +14,7 @@ spring:
     redis:
       database: 0
       host: fileUploader-cache
-      port: 6379
+      port: 6380
   servlet:
     multipart:
       max-file-size: 10MB
@@ -24,7 +24,7 @@ spring:
       enabled: false
       file: compose.yaml
   datasource:
-    url: jdbc:postgresql://fileUploader-db:5432/fileUploader?useSSL=false
+    url: jdbc:postgresql://fileUploader-db:5434/fileUploader?useSSL=false
     username: postgres
     password: Youcode@2023
     driver-class-name: org.postgresql.Driver
