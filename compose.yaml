@@ -16,9 +16,11 @@ services:
       timeout: 10s
       retries: 5
     ports:
-      - "5434:5434"
+      - "5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - type: volume
+        source: postgres-db
+        target: /var/lib/postgresql/data
     networks:
       - fileUploader
 
@@ -32,7 +34,7 @@ services:
       timeout: 10s
       retries: 5
     ports:
-      - "6380:6380"
+      - "6379"
     restart: always
     networks:
       - fileUploader
