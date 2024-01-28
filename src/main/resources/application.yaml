@@ -5,15 +5,16 @@ logging:
   level:
     org.springframework.beans.factory: ERROR
 
-redis:
-  host: fileUploader-cache
-  port: 6379
-
 spring:
   cache:
     type: redis
     redis:
       time-to-live: 60000
+  data:
+    redis:
+      database: 0
+      host: fileUploader-cache
+      port: 6379
   servlet:
     multipart:
       max-file-size: 10MB
