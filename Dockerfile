@@ -1,4 +1,5 @@
 FROM maven:3.9-amazoncorretto-21 AS build
+MAINTAINER ouharrioutman@gmail.com
 VOLUME /tmp
 WORKDIR /app
 COPY . .
